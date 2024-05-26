@@ -1,11 +1,19 @@
-import { createEffect, createSignal, onMount } from "solid-js";
-import { useWebSocket } from "./useWebSocket";
+import {
+  Show,
+  createEffect,
+  createSignal,
+  onMount,
+  useContext,
+} from "solid-js";
+import { useWebSocket } from "../useWebSocket";
+import { AuthContext } from "../contexts/AuthContext";
 
 function App() {
   const { messages, sendMessage, subscribeToChannel } =
     useWebSocket("ws://localhost:433");
   const [input, setInput] = createSignal("");
   const [channel, setChannel] = createSignal("");
+  const { user } = useContext(AuthContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,8 +27,8 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>WebSocket Chat</h1>
+    <Show when={user()} fallback={"Loading..."}>
+      <h1>WebSocket Chat {user().username}</h1>
       <form onSubmit={handleSubscribe}>
         <input
           type="text"
@@ -46,7 +54,7 @@ function App() {
           </li>
         ))}
       </ul>
-    </div>
+    </Show>
   );
 }
 

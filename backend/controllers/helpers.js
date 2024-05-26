@@ -8,6 +8,30 @@ import {
 import bcrypt from "bcrypt";
 
 /**
+ * Find user by username
+ *
+ * @async
+ * @param {string} username
+ * @returns user object if user found or send a 404 status code
+ */
+export const fetchUserDetailByUsername = async (req, res, username) => {
+  const { user: user_session_data } = req.session
+  const [userDetail] = await db.select({
+    id: users.id,
+    username: users.username,
+  }).from(users).where(eq(users.username, username)).leftJoin(profiles, eq(users.id, profiles.userid))
+
+  if (userDetail !== undefined) {
+    return {
+      ...userDetail,
+    }
+  } else {
+    return null
+  }
+}
+
+
+/**
  * DB query to return user details if user exists, it acepts username as argument
  *
  * @async

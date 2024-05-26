@@ -2,8 +2,7 @@ import { Router } from 'express'
 import pjson from '../../package.json' assert { type: 'json' };
 
 import authRoute from "./auth.route.js";
-
-import { BASE_PATH } from '../config.js';
+import profileRoute from "./profile.route.js";
 
 const mainRoute = Router();
 
@@ -12,5 +11,6 @@ mainRoute.get("/", (req, res) =>
 );
 
 mainRoute.use("/", authRoute);
+mainRoute.use("/profile", profileRoute);
 
 export default mainRoute

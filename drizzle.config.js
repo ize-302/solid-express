@@ -2,7 +2,7 @@ import { TURSO_DATABASE_URL, TURSO_DATABASE_AUTH_TOKEN } from './backend/config.
 
 module.exports = {
   schema: "./backend/db/schema.js",
-  out: "./drizzle",
+  out: "./backend/drizzle",
   dialect: "sqlite",
   driver: "turso",
   dbCredentials: {

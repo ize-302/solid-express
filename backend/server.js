@@ -5,8 +5,13 @@ import { WebSocketServer } from 'ws';
 import { BASE_PATH, PORT } from './config.js';
 import mainRoute from './routes/index.js'
 import sessionMiddleware from "./middlewares/session.middleware.js";
+import cors from 'cors'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 const app = express();
+
+// setup CORS logic
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 // Bodyparser
 app.use(bodyParser.json());
