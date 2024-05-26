@@ -6,15 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node backend/index.js",
-    "client": "cd frontend && npm start"
+    "server": "nodemon backend/index.js",
+    "client": "cd frontend && npm run dev"
   },
   "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "ws": "^8.17.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
