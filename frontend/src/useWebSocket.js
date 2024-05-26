@@ -4,9 +4,9 @@ export function useWebSocket(url) {
   const [messages, setMessages] = createSignal([]);
   let socket;
 
-  const sendMessage = (channel, content) => {
+  const sendMessage = (channel, content, author) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify({ type: 'message', channel, content });
+      const message = JSON.stringify({ type: 'message', channel, content, author });
       socket.send(message);
     }
   };
@@ -27,14 +27,14 @@ export function useWebSocket(url) {
         const reader = new FileReader();
         reader.onload = () => {
           const parsedMessage = JSON.parse(reader.result);
-          const { channel, content } = parsedMessage;
-          setMessages((prev) => [...prev, { channel, content }]);
+          const { channel, content, author } = parsedMessage;
+          setMessages((prev) => [...prev, { channel, content, author }]);
         };
         reader.readAsText(event.data);
       } else {
         const parsedMessage = JSON.parse(event.data);
-        const { channel, content } = parsedMessage;
-        setMessages((prev) => [...prev, { channel, content }]);
+        const { channel, content, author } = parsedMessage;
+        setMessages((prev) => [...prev, { channel, content, author }]);
       }
     };
 

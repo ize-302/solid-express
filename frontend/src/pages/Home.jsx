@@ -1,10 +1,4 @@
-import {
-  Show,
-  createEffect,
-  createSignal,
-  onMount,
-  useContext,
-} from "solid-js";
+import { Show, createSignal, onMount, useContext } from "solid-js";
 import { useWebSocket } from "../useWebSocket";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -17,7 +11,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendMessage(channel(), input());
+    sendMessage(channel(), input(), user().id);
     setInput("");
   };
 
@@ -50,7 +44,8 @@ function App() {
       <ul>
         {messages().map((message, index) => (
           <li key={index}>
-            {message.channel}: {message.content}
+            {message.author.id === user().id ? "me" : message.author.username}:{" "}
+            {message.content}
           </li>
         ))}
       </ul>
