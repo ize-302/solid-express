@@ -1,12 +1,22 @@
 import express from 'express';
-import http from 'http';
+// import http from 'http';
+import bodyParser from "body-parser";
 import { WebSocketServer } from 'ws';
+import { BASE_PATH, PORT } from './config.js';
+import mainRoute from './routes/index.js'
+import sessionMiddleware from "./middlewares/session.middleware.js";
 
 const app = express();
-const server = http.createServer(app);
-const wss = new WebSocketServer({ port: 433 });
 
-const PORT = process.env.PORT || 5000;
+// Bodyparser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// session middleware logic
+app.use(sessionMiddleware);
+
+// const server = http.createServer(app);
+const wss = new WebSocketServer({ port: 433 });
 
 const clients = new Map();
 
@@ -43,11 +53,15 @@ wss.on('connection', (ws) => {
   });
 });
 
+app.use(BASE_PATH, mainRoute);
+app.get('/', (_, res) => res.redirect(BASE_PATH))
 
-app.get('/api', (req, res) => {
-  res.send('Hello from the backend!');
+app.get('*', function (req, res) {
+  res.status(StatusCodes.NOT_FOUND).json({ success: false, message: ReasonPhrases.NOT_FOUND });
 });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+export default app
