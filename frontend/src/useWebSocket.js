@@ -54,3 +54,7 @@ export function useWebSocket(url) {
 
   return { messages, sendMessage, subscribeToChannel };
 }
+
+const wsConnect = useWebSocket("ws://localhost:5000");
+
+export default wsConnect

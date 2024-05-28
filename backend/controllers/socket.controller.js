@@ -1,51 +1,127 @@
 import { WebSocketServer } from 'ws';
 import { fetchUserDetailByUsername } from './helpers.js';
 
+
 class Socket {
-  static async init(sessionMiddleware) {
-    const wss = new WebSocketServer({ port: 433 });
+  static async init(sessionMiddleware, server) {
+    const wss = new WebSocketServer({ server });
     const clients = new Map();
 
     wss.on('connection', (ws, req) => {
-      sessionMiddleware(req, {}, async function () {
-        const { user: user_session_data } = req.session
-        if (user_session_data) {
-          console.log(`New websocket connection: ${user_session_data?.username}`);
-
-          // get user detail
-          const userDetail = await fetchUserDetailByUsername(req, undefined, user_session_data.username)
-          ws.on('message', (message) => {
-            try {
-              const parsedMessage = JSON.parse(message)
-              const { type, content, channel, author } = parsedMessage
-
-              if (type === 'subscribe') {
-                // Subscribe to a channel
-                if (!clients.has(ws)) {
-                  clients.set(ws, new Set());
-                }
-                clients.get(ws).add(channel);
-              } else if (type === 'message') {
-                // Broadcast the message to all clients
-                wss.clients.forEach((client) => {
-                  if (client.readyState && clients.get(client)?.has(channel)) {
-                    client.send(JSON.stringify({ channel, content, author }));
-                  }
-                });
-              }
-            } catch (error) {
-              console.error('Error processing message', err);
-            }
-          });
+      sessionMiddleware(req, {}, async function (err) {
+        if (err) {
+          console.error('Session middleware error:', err);
+          ws.close();
+          return;
         }
 
-        ws.on('close', () => {
-          console.log('Client disconnected');
-        });
-      });
-    });
+        const { user: user_session_data } = req.session // current user
 
+        if (user_session_data) {
+          console.log('A new client connected:')
+          ws.send('Welcome new client: ')
+          ws.on('message', function message(data) {
+            console.log(user_session_data)
+            const parsedData = JSON.parse(data)
+            const { type, content, channel, author } = parsedData
+
+            if (type === 'subscribe') {
+              // Subscribe to a channel
+              if (!clients.has(ws)) {
+                clients.set(ws, { channels: new Set(), author });
+              }
+              clients.get(ws).channels.add(channel);
+              console.log(author, 'subscribed to: ', channel)
+            }
+            else if (type === 'message') {
+              // Broadcast the message to all clients
+              wss.clients.forEach((client) => {
+                const clientData = clients.get(client);
+                if (client.readyState === ws.OPEN && clientData && clientData.channels.has(channel)) {
+                  client.send(JSON.stringify({ channel, content, author }));
+                }
+              });
+            }
+          });
+
+          ws.on('close', () => {
+            console.log('disconnected', new Date().toISOString());
+            ws.send('Connection closed')
+          });
+        } else {
+          console.log('Unauthorised')
+        }
+
+
+      })
+
+    })
+
+    console.log('WebSocket server started on port 5000', new Date().toISOString());
   }
 }
+
+// class Socket {
+//   static async init(sessionMiddleware) {
+//     const wss = new WebSocketServer({ port: 8080 });
+//     const clients = new Map();
+
+//     wss.on('connection', (ws, req) => {
+//       sessionMiddleware(req, {}, async function (err) {
+//         if (err) {
+//           console.error('Session middleware error:', err);
+//           ws.close();
+//           return;
+//         }
+
+//         const { user: user_session_data } = req.session
+//         if (user_session_data) {
+//           console.log(`New websocket connection: ${user_session_data?.username}`);
+
+//           try {
+//             // get user detail
+//             const userDetail = await fetchUserDetailByUsername(req, undefined, user_session_data.username)
+//             ws.on('message', (message) => {
+//               try {
+//                 const parsedMessage = JSON.parse(message)
+//                 const { type, content, channel } = parsedMessage
+
+//                 if (type === 'subscribe') {
+//                   // Subscribe to a channel
+//                   if (!clients.has(ws)) {
+//                     // clients.set(ws, new Set());
+//                     clients.set(ws, { channels: new Set(), userDetail });
+//                   }
+//                   // clients.get(ws).add(channel);
+//                   clients.get(ws).channels.add(channel);
+//                 } else if (type === 'message') {
+//                   // Broadcast the message to all clients
+//                   wss.clients.forEach((client) => {
+//                     const clientData = clients.get(client);
+//                     console.log('hmm--', clientData)
+//                     // if (client.readyState === ws.OPEN && clients.get(client)?.has(channel)) {
+//                     // if (client.readyState === ws.OPEN && clientData && clientData.channels.has(channel)) {
+//                     //   client.send(JSON.stringify({ channel, content, author: userDetail }));
+//                     // }
+//                   });
+//                 }
+//               } catch (error) {
+//                 console.error('Error processing message', err);
+//               }
+//             });
+//           } catch (error) {
+//             console.error('Error fetching user details:', error);
+//           }
+//         }
+
+//         ws.on('close', () => {
+//           console.log('Client disconnected');
+//           clients.delete(ws);
+//         });
+//       });
+//     });
+
+//   }
+// }
 
 export default Socket

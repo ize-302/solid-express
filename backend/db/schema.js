@@ -18,24 +18,31 @@ export const users = sqliteTable(
   })
 );
 
-export const profiles = sqliteTable(
-  "profiles",
+export const conversations = sqliteTable(
+  "conversations",
   {
     id: text("id").primaryKey().$defaultFn(() => createId()),
-    userid: text('userid'),
-  },
-  (profiles) => ({
-    userIdIndex: uniqueIndex("userIdIndex").on(profiles.userid),
-  })
+  }
 );
 
-export const chatrooms = sqliteTable(
-  "chatrooms",
+export const participants = sqliteTable(
+  "participants",
   {
     id: text("id").primaryKey().$defaultFn(() => createId()),
-    name: text("name"),
+    conversation_id: text('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
+    user_id: text('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  }
+);
+
+export const messages = sqliteTable(
+  "messages",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    conversation_id: text('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
+    sender_id: text('sender_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    content: text('content').notNull(),
   },
-  (chatrooms) => ({
-    nameIndex: uniqueIndex("nameIndex").on(chatrooms.name),
+  (messages) => ({
+    messagesIndex: uniqueIndex("messagesIndex").on(messages.conversation_id),
   })
 );

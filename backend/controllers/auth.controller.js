@@ -5,9 +5,8 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import yup from 'yup'
 
-
 import { db } from "../db/index.js";
-import { users, profiles } from "../db/schema.js";
+import { users } from "../db/schema.js";
 import { handleErrors, handlePasswordHash, isUserExists } from "./helpers.js";
 
 const loginSchema = yup.object({
@@ -33,10 +32,6 @@ class AuthController {
       const { passwordHash } = await handlePasswordHash(password)
       // finally create user
       const [new_user] = await db.insert(users).values({ ...req.body, password: passwordHash }).returning();
-      // update avatar
-      await db
-        .insert(profiles)
-        .values({ userid: new_user.id })
       res
         .status(StatusCodes.CREATED)
         .json({ success: true, message: "Account has been created. Proceed to login" });

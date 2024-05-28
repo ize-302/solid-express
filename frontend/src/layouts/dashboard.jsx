@@ -3,9 +3,11 @@ import { AuthContext } from "../contexts/AuthContext";
 import { For, onMount, useContext } from "solid-js";
 import logo from "../assets/logo.svg";
 import { Bell, Search, User, Chat, Group } from "../components/icons/MenuIcons";
+import PrivateChats from "../components/PrivateChats";
+import SearchSection from "../components/SearchSection";
 
 function DashboardLayout(props) {
-  const { authenticated, checkSessionState } = useContext(AuthContext);
+  const { authenticated, checkSessionState, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,11 +30,11 @@ function DashboardLayout(props) {
     //   icon: <Group />,
     //   path: "/group-chat",
     // },
-    // {
-    //   name: "search",
-    //   icon: <Search />,
-    //   path: "/search",
-    // },
+    {
+      name: "search",
+      icon: <Search />,
+      path: "/search",
+    },
     // {
     //   name: "notification",
     //   icon: <Bell />,
@@ -41,9 +43,10 @@ function DashboardLayout(props) {
   ];
 
   return (
-    <div class="p-5 h-screen flex flex-col bg-green-50">
-      <div>
-        <img src={logo} alt="logo" />
+    <div class="bg-green-50">
+    <div class="p-5 flex flex-col container mx-auto h-screen">
+      <div class="flex gap-2 items-center text-xl">
+        <img src={logo} alt="logo" /> [{user() ? user().username : null}]
       </div>
 
       <div class="mt-4 overflow-hidden rounded-lg border border-black bg-background shadow h-full bg-white flex">
@@ -70,12 +73,16 @@ function DashboardLayout(props) {
             <User />
           </A> */}
         </div>
-        <div class="min-w-[400px] max-w-[400px] border-r border-black overflow-y-auto"></div>
-        <div class="bg-gray-100 w-full overflow-y-auto">{props.children}</div>
+        <div class="min-w-[400px] max-w-[400px] border-r border-black overflow-y-auto">
+          {location.pathname === '/' && <PrivateChats />} 
+          {location.pathname === '/search' && <SearchSection />} 
+        </div>
+        <div class="bg-slate-200 w-full overflow-y-auto">{props.children}</div>
       </div>
       <div class="text-center mt-3 text-slate-500 text-sm">
         Built with 💚 by ize-302
       </div>
+    </div>
     </div>
   );
 }

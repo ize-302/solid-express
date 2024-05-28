@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm"
-import { profiles, users } from "../db/schema.js"
+import { users } from "../db/schema.js"
 import { db } from "../db/index.js"
 import {
   ReasonPhrases,
@@ -19,7 +19,7 @@ export const fetchUserDetailByUsername = async (req, res, username) => {
   const [userDetail] = await db.select({
     id: users.id,
     username: users.username,
-  }).from(users).where(eq(users.username, username)).leftJoin(profiles, eq(users.id, profiles.userid))
+  }).from(users).where(eq(users.username, username))
 
   if (userDetail !== undefined) {
     return {
@@ -30,6 +30,28 @@ export const fetchUserDetailByUsername = async (req, res, username) => {
   }
 }
 
+export const fetchUserDetailById = async (user_id) => {
+  const [result] = await db.select({
+    id: users.id,
+    username: users.username,
+  }).from(users).where(eq(users.id, user_id))
+  if (result !== undefined) {
+    return { ...result }
+  } else {
+    return undefined
+  }
+}
+
+export const fetchUsersById = async (users_ids) => {
+  try {
+    const res = await Promise.all(
+      users_ids.map(user_id => fetchUserDetailById(user_id))
+    );
+    return res
+  } catch (error) {
+    throw Error("Promise failed");
+  }
+}
 
 /**
  * DB query to return user details if user exists, it acepts username as argument
