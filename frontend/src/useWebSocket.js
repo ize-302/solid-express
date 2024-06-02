@@ -2,11 +2,12 @@ import { createSignal, onCleanup } from 'solid-js';
 
 export function useWebSocket(url) {
   const [messages, setMessages] = createSignal([]);
+
   let socket;
 
-  const sendMessage = (channel, content, author) => {
+  const sendMessage = (channel, content, sender_id) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify({ type: 'message', channel, content, author });
+      const message = JSON.stringify({ type: 'message', channel, content, sender_id });
       socket.send(message);
     }
   };
@@ -22,19 +23,23 @@ export function useWebSocket(url) {
   const connect = () => {
     socket = new WebSocket(url);
 
+    socket.onopen = async () => {
+      console.log('WebSocket connected');
+    };
+
     socket.onmessage = (event) => {
       if (event.data instanceof Blob) {
         const reader = new FileReader();
         reader.onload = () => {
           const parsedMessage = JSON.parse(reader.result);
-          const { channel, content, author } = parsedMessage;
-          setMessages((prev) => [...prev, { channel, content, author }]);
+          const { channel, content, sender_id } = parsedMessage;
+          setMessages((prev) => [...prev, { channel, content, sender_id }]);
         };
         reader.readAsText(event.data);
       } else {
         const parsedMessage = JSON.parse(event.data);
-        const { channel, content, author } = parsedMessage;
-        setMessages((prev) => [...prev, { channel, content, author }]);
+        const { channel, content, sender_id } = parsedMessage;
+        setMessages((prev) => [...prev, { channel, content, sender_id }]);
       }
     };
 
@@ -52,7 +57,8 @@ export function useWebSocket(url) {
     }
   });
 
-  return { messages, sendMessage, subscribeToChannel };
+
+  return { messages, sendMessage, subscribeToChannel, setMessages, };
 }
 
 const wsConnect = useWebSocket("ws://localhost:5000");

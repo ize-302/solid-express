@@ -14,6 +14,7 @@ const Signup = () => {
     <div class="">
       <p class="text-gray-400">Create a Chatty account</p>
       <Form
+        id="signup-form"
         initialValues={{ username: "", password: "" }}
         validation={{
           username: Yup.string().required(),

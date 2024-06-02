@@ -1,7 +1,11 @@
+import Blank from "../components/Blank";
+
 const Search = () => {
   return (
-    <div>ss</div>
+    <div class="h-full">
+      <Blank />
+    </div>
   );
-}
- 
+};
+
 export default Search;

@@ -31,7 +31,7 @@ class AuthController {
       // use bcrypt library to hash password
       const { passwordHash } = await handlePasswordHash(password)
       // finally create user
-      const [new_user] = await db.insert(users).values({ ...req.body, password: passwordHash }).returning();
+      const [new_user] = await db.insert(users).values({ ...req.body, avatar_url: `https://api.dicebear.com/8.x/avataaars-neutral/svg?seed=${username}`, password: passwordHash }).returning();
       res
         .status(StatusCodes.CREATED)
         .json({ success: true, message: "Account has been created. Proceed to login" });

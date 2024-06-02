@@ -4,7 +4,7 @@ import ConversationsController from '../controllers/conversations.controller.js'
 
 const conversationsRoute = Router();
 
-conversationsRoute.post("/request", authenticationMiddleware, ConversationsController.request);
+conversationsRoute.post("/new", authenticationMiddleware, ConversationsController.new);
 conversationsRoute.get("/", authenticationMiddleware, ConversationsController.all);
 
 export default conversationsRoute

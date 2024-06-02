@@ -19,26 +19,24 @@ class Socket {
 
         if (user_session_data) {
           console.log('A new client connected:')
-          ws.send('Welcome new client: ')
           ws.on('message', function message(data) {
-            console.log(user_session_data)
             const parsedData = JSON.parse(data)
-            const { type, content, channel, author } = parsedData
+            const { type, content, channel, sender_id } = parsedData
 
             if (type === 'subscribe') {
               // Subscribe to a channel
               if (!clients.has(ws)) {
-                clients.set(ws, { channels: new Set(), author });
+                clients.set(ws, { channels: new Set(), sender_id });
               }
               clients.get(ws).channels.add(channel);
-              console.log(author, 'subscribed to: ', channel)
+              console.log(sender_id, 'subscribed to: ', channel)
             }
             else if (type === 'message') {
               // Broadcast the message to all clients
               wss.clients.forEach((client) => {
                 const clientData = clients.get(client);
                 if (client.readyState === ws.OPEN && clientData && clientData.channels.has(channel)) {
-                  client.send(JSON.stringify({ channel, content, author }));
+                  client.send(JSON.stringify({ channel, content, sender_id }));
                 }
               });
             }
@@ -46,7 +44,6 @@ class Socket {
 
           ws.on('close', () => {
             console.log('disconnected', new Date().toISOString());
-            ws.send('Connection closed')
           });
         } else {
           console.log('Unauthorised')

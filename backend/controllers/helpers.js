@@ -1,5 +1,5 @@
-import { eq } from "drizzle-orm"
-import { users } from "../db/schema.js"
+import { and, eq, inArray, ne } from "drizzle-orm"
+import { conversations, participants, users } from "../db/schema.js"
 import { db } from "../db/index.js"
 import {
   ReasonPhrases,
@@ -19,6 +19,7 @@ export const fetchUserDetailByUsername = async (req, res, username) => {
   const [userDetail] = await db.select({
     id: users.id,
     username: users.username,
+    avatar_url: users.avatar_url
   }).from(users).where(eq(users.username, username))
 
   if (userDetail !== undefined) {
@@ -34,6 +35,7 @@ export const fetchUserDetailById = async (user_id) => {
   const [result] = await db.select({
     id: users.id,
     username: users.username,
+    avatar_url: users.avatar_url
   }).from(users).where(eq(users.id, user_id))
   if (result !== undefined) {
     return { ...result }
@@ -96,4 +98,17 @@ export const handleErrors = async (res, error, customErrorMessage) => {
   } else {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: ReasonPhrases.INTERNAL_SERVER_ERROR });
   }
+}
+
+
+export const fetchUserConversationsIds = async (user_id) => {
+  const user_participations = await db.select({ id: participants.conversation_id }).from(participants).where(eq(participants.user_id, user_id))
+  const user_participations_ids = user_participations.map(item => item.id)
+  const user_conversations = await db.select({
+    user_id: users.id,
+    username: users.username,
+    avatar_url: users.avatar_url,
+    conversation_id: participants.conversation_id
+  }).from(participants).where(and(inArray(participants.conversation_id, user_participations_ids), ne(participants.user_id, user_id))).leftJoin(users, eq(users.id, participants.user_id))
+  return user_conversations
 }

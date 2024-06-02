@@ -12,6 +12,7 @@ export const users = sqliteTable(
     id: text("id").primaryKey().$defaultFn(() => createId()),
     username: text("username"),
     password: text("password"),
+    avatar_url: text('avatar_url')
   },
   (users) => ({
     usernameIndex: uniqueIndex("usernameIndex").on(users.username),
@@ -41,8 +42,5 @@ export const messages = sqliteTable(
     conversation_id: text('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
     sender_id: text('sender_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
     content: text('content').notNull(),
-  },
-  (messages) => ({
-    messagesIndex: uniqueIndex("messagesIndex").on(messages.conversation_id),
-  })
+  }
 );

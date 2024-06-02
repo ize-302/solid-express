@@ -17,12 +17,10 @@ import NotFound from "./pages/NotFound";
 
 // providers
 import AuthProvider from "./contexts/AuthContext";
-import StateProvider from "./contexts/StateContext";
 
 render(
   () => (
     <AuthProvider>
-      <StateProvider>
       <Router root={DefaultLayout}>
         <Route path="/" component={DashboardLayout}>
           <Route path="/" component={Home} />
@@ -34,7 +32,6 @@ render(
         </Route>
         <Route path="*paramName" component={NotFound} />
       </Router>
-      </StateProvider>
     </AuthProvider>
   ),
   document.getElementById("root")
