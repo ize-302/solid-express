@@ -4,6 +4,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/sqlite-core";
 import { createId } from '@paralleldrive/cuid2';
+import { sql } from "drizzle-orm";
 
 //  tables
 export const users = sqliteTable(
@@ -42,5 +43,8 @@ export const messages = sqliteTable(
     conversation_id: text('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
     sender_id: text('sender_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
     content: text('content').notNull(),
+    datetime: text('datetime')
+      .notNull()
+      .default(sql`(current_timestamp)`),
   }
 );

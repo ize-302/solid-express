@@ -1,0 +1,1 @@
+ALTER TABLE `messages` ADD `datetitme` text DEFAULT (current_timestamp) NOT NULL;

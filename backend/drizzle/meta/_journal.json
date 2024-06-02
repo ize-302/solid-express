@@ -22,6 +22,20 @@
       "when": 1716976506968,
       "tag": "0002_lowly_felicia_hardy",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1717305787356,
+      "tag": "0003_chemical_firebrand",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1717305975882,
+      "tag": "0004_cuddly_the_twelve",
+      "breakpoints": true
     }
   ]
 }

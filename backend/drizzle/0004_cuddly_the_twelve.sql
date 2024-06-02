@@ -1,0 +1,1 @@
+ALTER TABLE `messages` RENAME COLUMN `datetitme` TO `datetime`;
