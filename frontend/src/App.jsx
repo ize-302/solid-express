@@ -4,7 +4,7 @@ function App() {
   const [message, setMessage] = createSignal("Loading...");
 
   onMount(async () => {
-    const response = await fetch("/api");
+    const response = await fetch(`/api`);
     const text = await response.text();
     setMessage(text);
   });

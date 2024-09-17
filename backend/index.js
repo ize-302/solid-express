@@ -1,8 +1,13 @@
 import express from 'express';
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
+import cors from 'cors'
 
-app.get('/api', (req, res) => {
+var corsOptions = {
+  origin: 'http://localhost:3000',
+}
+
+app.get('/api', cors(corsOptions), (req, res) => {
   res.send('Hello from the backend!');
 });
 
