@@ -1,10 +1,12 @@
+import 'dotenv/config'
 import express from 'express';
 const app = express();
 const PORT = process.env.PORT || 8000;
 import cors from 'cors'
 
+
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.CLIENT_ORIGIN,
 }
 
 app.get('/api', cors(corsOptions), (req, res) => {
