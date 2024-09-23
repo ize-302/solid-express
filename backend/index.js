@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import express from 'express';
-const app = express();
-const PORT = process.env.PORT;
 import cors from 'cors'
 
+const app = express();
+const PORT = process.env.PORT;
 
 var corsOptions = {
   origin: process.env.CLIENT_ORIGIN,

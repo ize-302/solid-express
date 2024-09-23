@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node backend/index.js",
-    "client": "cd frontend && npm run dev"
+    "client": "cd frontend && npm start"
   },
   "type": "module",
   "keywords": [],
