@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import express from 'express';
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
 import cors from 'cors'
 
 
@@ -10,7 +10,7 @@ var corsOptions = {
 }
 
 app.get('/api', cors(corsOptions), (req, res) => {
-  res.send('Hello from the backend!');
+  res.send('Hello from the backend!!');
 });
 
 app.listen(PORT, () => {

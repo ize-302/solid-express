@@ -3,12 +3,11 @@ import solidPlugin from 'vite-plugin-solid';
 // import devtools from 'solid-devtools/vite';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
-
-  const API_URL = `${env.VITE_API_URL ?? 'http://localhost:8000'}`;
-  const PORT = `${env.VITE_PORT ?? '3000'}`;
+  const env = loadEnv(mode, '../', '')
+  const API_URL = `${env.API_URL}`;
 
   return {
+    envDir: "../",
     plugins: [
       /* 
       Uncomment the following line to enable solid-devtools.
@@ -18,7 +17,7 @@ export default defineConfig(({ mode }) => {
       solidPlugin(),
     ],
     server: {
-      port: PORT,
+      // port: PORT,
       proxy: {
         '/api': API_URL,
       },
