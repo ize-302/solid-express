@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 var corsOptions = {
-  origin: process.env.CLIENT_ORIGIN,
+  origin: 'http://localhost:5173',
 }
 
 app.get('/api', cors(corsOptions), (req, res) => {
@@ -14,5 +14,5 @@ app.get('/api', cors(corsOptions), (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🔥 API service is running on port ${PORT}`);
 });

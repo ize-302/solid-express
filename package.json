@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node backend/index.js",
-    "client": "cd frontend && npm start"
+    "client": "cd frontend && npm start",
+    "start:dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "nodemon backend/index.js",
+    "client:dev": "cd frontend && npm run dev"
   },
   "type": "module",
   "keywords": [],
@@ -15,7 +17,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "nodemon": "^3.1.7"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

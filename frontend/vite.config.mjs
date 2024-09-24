@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
       solidPlugin(),
     ],
     server: {
-      // port: PORT,
+      host: true,
       proxy: {
         '/api': API_URL,
       },

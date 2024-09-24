@@ -1,0 +1,11 @@
+services:
+  backend:
+    build: .
+    restart: always # What to do if container crashes
+    container_name: app_c
+    ports:
+      - "8000:8000"
+      - "5173:5173"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
